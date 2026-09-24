@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Candidatos TSE - Minas Gerais 2026</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<a class="pular" href="#consulta">Ir para a consulta</a>
+<header class="cabecalho"><div class="limite topo"><h1>Candidatos TSE</h1><p>Minas Gerais <span class="ano">2026</span></p></div></header>
+<main id="consulta" class="limite consulta"><aside class="painel-filtros" aria-labelledby="titulo-filtros"><h2 id="titulo-filtros">Filtrar candidaturas</h2><form method="get" th:action="@{/}" class="filtros" role="search" aria-label="Filtrar candidatos">
+    <div class="campo campo-busca">
+        <label for="texto">Nome ou n&uacute;mero</label>
+        <input id="texto" name="texto" type="text" th:value="${textoSelecionado}" placeholder="Buscar candidato" autocomplete="off">
+    </div>
+    <div class="campo">
+        <label for="cargo">Cargo</label>
+        <select id="cargo" name="cargo">
+            <option value="">Todos</option>
+            <option th:each="cargo : ${cargos}" th:value="${cargo}" th:text="${cargo}" th:selected="${cargo == cargoSelecionado}"></option>
+        </select>
+    </div>
+    <div class="campo">
+        <label for="partido">Partido</label>
+        <select id="partido" name="partido">
+            <option value="">Todos</option>
+            <option th:each="partido : ${partidos}" th:value="${partido}" th:text="${partido}" th:selected="${partido == partidoSelecionado}"></option>
+        </select>
+    </div>
+    <div class="acoes">
+        <button type="submit">Filtrar</button>
+        <a th:href="@{/}" class="limpar">Limpar</a>
+    </div>
+</form></aside><section class="resultados" aria-labelledby="titulo-resultados">
+    <div class="linha-resultados"><h2 id="titulo-resultados">Candidaturas</h2><p><strong id="total" th:text="${total}">0</strong> candidato(s) encontrado(s)</p></div>
+    <div class="vazio" th:if="${total == 0}" role="status">
+        <h3>Nenhum candidato encontrado</h3><p>N&atilde;o h&aacute; resultados para os filtros informados.</p>
+        <a th:href="@{/}">Ver todos os candidatos</a>
+    </div>
+    <div class="grade-candidatos">
+        <article class="card" th:each="cand : ${candidatos}">
+            <div class="apresentacao"><div class="retrato">
+    <span class="sem-foto" aria-hidden="true">Sem foto</span>
+    <img th:if="${exibirFotos}" class="foto-candidato" th:src="@{'/images/candidatos/' + ${cand.nomeArquivoFoto}}"
+         th:alt="${cand.nomeUrna}" width="161" height="225" loading="lazy"
+         onerror="this.style.visibility='hidden'">
+</div><div class="resumo"><span class="numero" th:text="${cand.nrCandidato}" aria-label="N&uacute;mero do candidato">00000</span><h3 th:text="${cand.nomeUrna}">Nome de urna</h3><p class="cargo" th:text="${cand.cargo}"></p><strong class="sigla" th:text="${cand.siglaPartido}"></strong></div></div><div class="conteudo"><p class="partido"><strong th:text="${cand.siglaPartido}"></strong><span th:if="${!#strings.isEmpty(cand.nomePartido)}" th:text="${' - ' + cand.nomePartido}"></span></p><dl class="dados">
+    <div th:if="${!#strings.isEmpty(cand.municipio) and cand.municipio != '#NULO' and cand.municipio != '#NE'}">
+        <dt>Local</dt><dd><span th:text="${cand.municipio}"></span> / <span th:text="${cand.uf}"></span></dd>
+    </div>
+    <div th:if="${cand.idade >= 0}"><dt>Idade</dt><dd th:text="${cand.idade + ' anos'}"></dd></div>
+    <div th:if="${!#strings.isEmpty(cand.situacaoCandidatura) and cand.situacaoCandidatura != '#NULO' and cand.situacaoCandidatura != '#NE'}">
+        <dt>Situa&ccedil;&atilde;o</dt><dd th:text="${cand.situacaoCandidatura}"></dd>
+    </div>
+    <div th:if="${!#strings.isEmpty(cand.ocupacao) and cand.ocupacao != '#NULO' and cand.ocupacao != '#NE'}">
+        <dt>Ocupa&ccedil;&atilde;o</dt><dd th:text="${cand.ocupacao}"></dd>
+    </div>
+    <div th:if="${!#strings.isEmpty(cand.grauInstrucao) and cand.grauInstrucao != '#NULO' and cand.grauInstrucao != '#NE'}">
+        <dt>Escolaridade</dt><dd th:text="${cand.grauInstrucao}"></dd>
+    </div>
+</dl>
+<p class="nome-civil" th:if="${!#strings.isEmpty(cand.nomeCandidato)}" th:text="${cand.nomeCandidato}"></p></div>
+        </article>
+    </div>
+</section></main>
+<footer class="rodape"><div class="limite">Candidatos TSE &middot; Minas Gerais &middot; Elei&ccedil;&otilde;es 2026</div></footer>
+</body>
+</html>
